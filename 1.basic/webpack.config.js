@@ -12,6 +12,7 @@ let config = process.env.NODE_ENV==='production'?prodConfig:devConfig; */
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const dotenv = require('dotenv');
+const htmlWebpackExtenralsPlugin =  require('html-webpack-extenrals-plugin')
 require('dotenv').config({
     path:resolve(__dirname,'.qa.env')
 });
@@ -19,7 +20,14 @@ console.log('process.env.NODE_ENV',process.env.NODE_ENV);
 module.exports = (env)=>({
     // mode 当前的运行模式  开发环境  生产环境 不指定环境
     mode: process.env.NODE_ENV,
-    devtool: 'hidden-source-map',
+    //eval比较快 因为字符串更好缓存 可以缓存
+    //source-map生成.map文件包含行和列的信息 还有loader的map
+    //cheap包含行不包含列信息，文件体积更小，也不包含loader的map 如果浏览器不支持es6，只能映射编译成es5后的代码
+    //module 包含loader的map cheap-module-source-map虽然没有列信息，但是又源文件的map
+    //inline 不生成map文件，内嵌dataURL 开发inline线上单独文件单独存放
+    //最佳实践 cheap-module-eval-source-map
+    //生产环境 不希望别人看见原始信息，所以用hidden-source-map
+    devtool: 'hidden-source-map', //map是给浏览器看的
     //对于入口来说，name就是entry的key,字符串就是main
     //对于非入口来说 
       //import('./src/title.js') src_title_js
@@ -56,7 +64,7 @@ module.exports = (env)=>({
         open: true, // 自动打开浏览器
     },
     externals: {
-        lodash: '_',
+        lodash: '_', //不会打包到文件中了
     },
     module: {
         rules: [
@@ -157,12 +165,34 @@ module.exports = (env)=>({
                     limit: 128*1024 // 如果体积小于limit就转成BASE64字符串内嵌
                 }
             }]}
+            { 
+                test: require.resolve('lodash'), //引入一次就会挂载到window上
+                loader: 'expose-loader',
+                options: {
+                    exposes: {
+                        globalName: '_',
+                        override: true
+                    }
+                }
+            },
         ],
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html',
             filename:'index.html'
+        }),
+        //有这个插件可以页面不用import lodash了，缺点是无法在全局下使用，只是当前入口文件的上下文有
+        new webpack.ProvidePlugin({
+            _: 'lodash'
+        }),
+        //自动插入cdn脚本，按需加载，页面中没用到引用的lodash不会插入到脚本中
+        new htmlWebpackExtenralsPlugin({
+            externals: {
+                module: 'lodash',
+                entry: 'cdn地址',
+                global: '_'
+            }
         }),
         //把收集到的所有的CSS样式都写入到main.css,然后现把此资源插入到HTML里去
         new MiniCssExtractPlugin({

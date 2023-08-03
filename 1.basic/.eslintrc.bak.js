@@ -1,7 +1,7 @@
 module.exports = {
     root: true, //根配置文件
     parser: "babel-eslint", // 需要一个parser解析器帮我们把源代码转成抽象语法树
-    extends: 'airbnb',
+    extends: 'airbnb', //继承airbnb，最佳实践
     // 指定解析器选项
     parserOptions: {
         sourceType: "module",
