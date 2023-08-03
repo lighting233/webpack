@@ -49,7 +49,7 @@ module.exports = (env)=>({
     //默认情况下devServer会读取打包后的路径,目录可以有多份，找不到找下一个
     devServer: {
         contentBase: resolve(__dirname, 'static'), //想使用静态文件时需要，例如html里有一个静态文件，dist目录里没有，放到static文件夹下
-        publicPath:'/', 
+        publicPath:'/', //一般不写
         writeToDisk: true, //指定此项会把打包后的文件写入硬盘一份
         compress: true, /// 是否启动压缩 gzip
         port: 8080, // 指定HTTP服务器的端口号
@@ -63,7 +63,7 @@ module.exports = (env)=>({
             {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader', // 先进行代码校验，然后再编译代码
-                enforce: 'pre', // 强制指定顺序 pre 之前 pre normal inline post
+                enforce: 'pre', // 强制指定顺序 pre 之前 pre normal inline post 限制性代码校验，再执行babel进行代码转换
                 options: { fix: true }, // 启动自动修复
                 include: resolve(__dirname, 'src'), // 只检查src目录里面的文件 白名单
                 // exclude:/node_modules/ //不需要检查node_modules里面的代码 黑名单
@@ -72,6 +72,9 @@ module.exports = (env)=>({
             1.先把ES6转成ES6语法树 babelCore
             2.然后调用预设preset-env把ES6语法树转成ES5语法树 preset-env
             3.再把ES5语法树重新生成es5代码 babelCore
+            polyfill-service
+            polyfill.io自动化的 JavaScript Polyfill 服务polyfil.io通过分析请求头信息中的 UserAgent实现自动加载浏览器所需的 polvfills
+            手动在html插入<script src"https://polyfill.io/v3/polyfill.min.js">/script>取代自己编译的按需加载的polyfill
             */
             {
                 test: /\.jsx?$/, //js或jsx
@@ -82,7 +85,17 @@ module.exports = (env)=>({
                             //预设是插件的集合
                             presets: [
                                 [
-                                    "@babel/preset-env",//可以转换js语法
+                                    ["@babel/preset-env",//可以转换js语法 promise Map Set之类的不会转
+                                    {
+                                        useBuiltIns: 'usage', //按需加载polyfill
+                                        corejs: {version:3}, //指定corejs的版本号 2或3 polyfill
+                                        targets: {
+                                            chrome: '60',
+                                            firefox: '60',
+                                            id: '9'
+                                        }
+                                    }
+                                ]
                                     "@babel/preset-react",//可以转换JSX语法
                                 ],
                             ],

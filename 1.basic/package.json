@@ -4,7 +4,7 @@
   "description": "- webpack5实战使用\r - webpack优化\r - webpack工作流  AST抽象语法树\r - loader\r - plugin tapable\r - hmr 实现原理",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --env=production",
     "start": "webpack serve"
   },
   "postcss": {
