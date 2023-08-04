@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --env=production",
-    "start": "webpack serve"
+    "build2": "set NODE_ENV=development webpack",
+    "build3": "cross-env NODE_ENV=development webpack",
+    "start": "webpack serve --env=development"
   },
   "postcss": {
     "postcssOptions": {

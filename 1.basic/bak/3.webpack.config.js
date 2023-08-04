@@ -62,7 +62,7 @@ module.exports = (env)=>({
         port: 8080, // 指定HTTP服务器的端口号
         open: true, // 自动打开浏览器
         //不是启动了一个新的服务器，而是给原来老的8080服务器添加了一个路由
-       /*  before(app){
+        before(app){
             //webpack-dev-sever就是一个express服务器 express();
             app.get('/api/users',(req,res)=>{//可以在这里定义路由
                 res.json([{id:1,name:'zhufeng'}]);
@@ -76,14 +76,15 @@ module.exports = (env)=>({
                     "^/api":""
                 } 
             }
-        } */
+        } 
     },
-   /*  watch:true,
+    //在命令行写了这里就不用写了，--watch
+    watch:true,
     watchOptions:{//监听选项
         ignored:/node_modules/,//不监听哪些文件夹
         aggregateTimeout:300,//监听到文件发生变化后延迟300毫秒才去重新编译
         poll:1000//1秒问1000次，数字越大，越敏感，数字越小，越延迟
-    }, */
+    }, 
     externals: {
         lodash: '_',
     },
@@ -178,15 +179,16 @@ module.exports = (env)=>({
         //一个入口可能会对应多个代码块 代码分割
         //一个代码块可能会对应多个文件main main.js main.css
         //等到讲插件我们会手写这个插件
-       /*  new CopyWebpackPlugin({
+       new CopyWebpackPlugin({
             patterns:[
                 {
                     from:resolve(__dirname,'src/documents'),
                     to:resolve(__dirname,'dist/documents')
                 }
             ]
-        }), */
+        }),
         ...htmlWebpackPlugins,
+        //清空上次打包的文件
         new CleanWebpackPlugin({
             cleanOnceBeforeBuildPatterns:["**/*"]
         }),

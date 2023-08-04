@@ -73,7 +73,7 @@ file-loader
 - 环境变量配置 1.6 模式(mode)
  - 两个变量 一个是在模块内部使用的变量,一个是在node环境也就是webpack.config.js里面用的变量
  - 1.命令行配置
-     - webpack执行时候，mode默认值是production,它模块内可以读到，
+     - webpack执行时候，mode默认值是production,它模块内可以读到，（在页面中process.env.NODE_ENV能读到，由webpack.config.js中的mode决定，在webpack.config.js中读不到process.env.NODE_ENV）
      - 可以通过--mode=development来改变mode值
      - 可以通过--env=development传参，传给webpack配置文件中导出的函数参数env了
 mode=>   模块内的process.env.NODE_ENV

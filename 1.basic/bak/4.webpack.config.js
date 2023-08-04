@@ -13,7 +13,6 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 const TerserPlugin = require('terser-webpack-plugin');
 const dotenv = require('dotenv');
 const htmlWebpackExtenralsPlugin =  require('html-webpack-extenrals-plugin')
-const FileManagerPlugin = require('filemanager-webpack-plugin')
 require('dotenv').config({
     path:resolve(__dirname,'.qa.env')
 });
@@ -97,8 +96,8 @@ module.exports = (env)=>({
                                 [
                                     ["@babel/preset-env",//可以转换js语法 promise Map Set之类的不会转
                                     {
-                                        useBuiltIns: 'usage', //usage-按需加载polyfill; false无视兼容性，全量引入polyfill；entry根据targets引入，需要指定corejs版本号
-                                        corejs: {version:2}, //指定corejs的版本号 2或3 polyfill; 2需要手动页面require('@babel/polyfill');3 需要引入import 'core-js/stable'和'regenerator-runtime/runtime'
+                                        useBuiltIns: 'usage', //按需加载polyfill
+                                        corejs: {version:3}, //指定corejs的版本号 2或3 polyfill
                                         targets: {
                                             chrome: '60',
                                             firefox: '60',
@@ -195,25 +194,6 @@ module.exports = (env)=>({
             EXPERESSION: '1+2',
             COPYRIGHT: {
                 AUTHOR: JSON.stringify('123')
-            }
-        }),
-        //配这个可以不用devtool
-        new webpack.SourceMapDevToolPlugin({
-            filename:'[file].map',//定义生成的 source map 的名称 main.js.map
-            append: "\n//# sourceMappingURL=http://localhost:8081/[url]"
-        }),
-        //打包后拷贝到指定目录
-        new FileManagerPlugin({
-            events:{
-                onEnd:{
-                    copy:[
-                        {
-                            source:'./dist/**/*.map',
-                            destination:'C:/aproject/zhufengwebpack202011/1.basic/sourcemap'
-                        }
-                    ],
-                    delete:['./dist/*.map']
-                }
             }
         }),
         //自动插入cdn脚本，按需加载，页面中没用到引用的lodash不会插入到脚本中

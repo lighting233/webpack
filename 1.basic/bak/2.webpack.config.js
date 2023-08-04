@@ -48,7 +48,7 @@ module.exports = {
                             ],
                             plugins: [
                                /*  [
-                                    '@babel/plugin-transform-runtime',
+                                    '@babel/plugin-transform-runtime', //开发类库的时候用到，不会污染全局环境
                                     {
                                         corejs:3,
                                         helpers:true,

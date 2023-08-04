@@ -6,7 +6,7 @@
 ## 1.老师，bundle、chunk怎么理
 - 后面给大家实现过程
 - 分析入口，分析依赖，生成模块，生成chunk,生成bundle
-- 每个入口一般来说会生成一个chunk,一个代码会生成一个bundle打包的资源文件)
+- 每个入口（entry）一般来说会生成一个chunk,一个代码会生成一个bundle打包的资源文件
 
 ## 2.hash,chunkhash ,contenthash 又什么区别？
 - md5
