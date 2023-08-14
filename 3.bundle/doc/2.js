@@ -2,8 +2,8 @@ let obj = {};
 var ageValue = 10;
 Object.defineProperty(obj,'age',{
     //value:20,
-    //writable:true,
-    //enumerable:true
+    // writable:true,
+    enumerable:true,
     get(){
         return ageValue;
     },

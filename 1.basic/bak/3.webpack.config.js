@@ -121,7 +121,7 @@ module.exports = (env)=>({
                 'style-loader', 
                 'css-loader',
                 {
-                    loader:'postcss-loader',
+                    loader:'postcss-loader', //给css加前缀
                     options:{
                         postcssOptions: {
                             plugins: [
@@ -158,13 +158,13 @@ module.exports = (env)=>({
     },
     plugins: [
         //webpack在打包之后会把所有的产出的资源放在一个assets对象上
-       /*  new HtmlWebpackPlugin({
+        new HtmlWebpackPlugin({
             template: './src/index.html',
             filename:'page1.html',
             chunks:['page1'],
             minify:{//启动HTML压缩
-                collapseWhitespace:true,
-                removeComments:true
+                collapseWhitespace:true, //去空格
+                removeComments:true //去注释
             }
         }),
         new HtmlWebpackPlugin({
@@ -175,7 +175,7 @@ module.exports = (env)=>({
                 collapseWhitespace:true,
                 removeComments:true
             }
-        }), */
+        }), 
         //一个入口可能会对应多个代码块 代码分割
         //一个代码块可能会对应多个文件main main.js main.css
         //等到讲插件我们会手写这个插件
@@ -196,8 +196,8 @@ module.exports = (env)=>({
         new MiniCssExtractPlugin({
             filename:'css/[name].css'
         }),
-        (env&&env.production)&&new OptimizeCssAssetsWebpackPlugin()
-    ].filter(Boolean),
+        (env&&env.production)&&new OptimizeCssAssetsWebpackPlugin() //压缩css
+    ].filter(Boolean), //过滤掉false的插件，不然会报错
    
 });
 //glob文件匹配模式 *可以匹配任意字符，除了路径分隔, 符 **可以匹配任意字符，包括路径分隔符

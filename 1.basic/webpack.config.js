@@ -117,7 +117,7 @@ module.exports = (env)=>({
                     },
                 ],
             },
-            //用MiniCssExtractPlugin.loader替换掉style-loader
+            //用MiniCssExtractPlugin.loader替换掉style-loader（因为style-lodar是动态创建js脚本的方式加入页面的，会阻塞）
             //把所有的css样式先收集起来
             { test: /\.css$/, use: [
                 MiniCssExtractPlugin.loader, 

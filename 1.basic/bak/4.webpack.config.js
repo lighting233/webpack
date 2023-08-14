@@ -1,10 +1,10 @@
-const { resolve ,join,basename} = require('path');
+const { resolve, join, basename } = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 /* let devConfig={}
 let prodConfig={};
@@ -12,13 +12,13 @@ let config = process.env.NODE_ENV==='production'?prodConfig:devConfig; */
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const dotenv = require('dotenv');
-const htmlWebpackExtenralsPlugin =  require('html-webpack-extenrals-plugin')
+const htmlWebpackExtenralsPlugin = require('html-webpack-extenrals-plugin')
 require('dotenv').config({
-    path:resolve(__dirname,'.qa.env')
+    path: resolve(__dirname, '.qa.env')
 });
 //一个是页面里的，浏览器环境的变量，一个是打包时读取的node环境变量，写法一样，但是不同
-console.log('process.env.NODE_ENV',process.env.NODE_ENV); //set NODE_ENV=development
-module.exports = (env)=>({
+console.log('process.env.NODE_ENV', process.env.NODE_ENV); //set NODE_ENV=development
+module.exports = (env) => ({
     // mode 当前的运行模式  开发环境  生产环境 不指定环境
     mode: process.env.NODE_ENV,
     //eval比较快 因为字符串更好缓存 可以缓存
@@ -31,11 +31,11 @@ module.exports = (env)=>({
     devtool: 'hidden-source-map', //map是给浏览器看的
     //对于入口来说，name就是entry的key,字符串就是main
     //对于非入口来说 
-      //import('./src/title.js') src_title_js
-      //代码分割 vendor common自己指定的
-    entry:{
-        main:'./src/index.js',
-        vendor:['jquery','lodash']
+    //import('./src/title.js') src_title_js
+    //代码分割 vendor common自己指定的
+    entry: {
+        main: './src/index.js',
+        vendor: ['jquery', 'lodash']
     },
     /* optimization:{
         splitChunks:{
@@ -50,15 +50,15 @@ module.exports = (env)=>({
         //入口模块
         filename: '[name].[chunkhash:5].js', // 输出的文件名
         //非入口模块 import splitChunks
-        chunkFilename:'[name].[chunkhash:5].js',
+        chunkFilename: '[name].[chunkhash:5].js',
         //当你把打包后文件插入index。html文件里的时候，src写法publicPath+filename
-        publicPath:'/'
+        publicPath: '/'
     },
     //为了提高性能，使用内存文件系统
     //默认情况下devServer会读取打包后的路径,目录可以有多份，找不到找下一个
     devServer: {
         contentBase: resolve(__dirname, 'static'), //想使用静态文件时需要，例如html里有一个静态文件，dist目录里没有，放到static文件夹下
-        publicPath:'/', //一般不写
+        publicPath: '/', //一般不写
         writeToDisk: true, //指定此项会把打包后的文件写入硬盘一份
         compress: true, /// 是否启动压缩 gzip
         port: 8080, // 指定HTTP服务器的端口号
@@ -93,20 +93,18 @@ module.exports = (env)=>({
                         options: {
                             //预设是插件的集合
                             presets: [
-                                [
-                                    ["@babel/preset-env",//可以转换js语法 promise Map Set之类的不会转
-                                    {
-                                        useBuiltIns: 'usage', //按需加载polyfill
-                                        corejs: {version:3}, //指定corejs的版本号 2或3 polyfill
-                                        targets: {
-                                            chrome: '60',
-                                            firefox: '60',
-                                            id: '9'
-                                        }
+                                ["@babel/preset-env",//可以转换js语法 promise Map Set之类的不会转
+                                {
+                                    useBuiltIns: 'usage', //按需加载polyfill
+                                    corejs: { version: 3 }, //指定corejs的版本号 2或3 polyfill
+                                    targets: {
+                                        chrome: '60',
+                                        firefox: '60',
+                                        ie: '9'
                                     }
-                                ]
-                                    "@babel/preset-react",//可以转换JSX语法
-                                ],
+                                }
+                            ],
+                            "@babel/preset-react",//可以转换JSX语法
                             ],
                             plugins: [
                                 ["@babel/plugin-proposal-decorators", { legacy: true }], //装饰器插件
@@ -118,28 +116,30 @@ module.exports = (env)=>({
             },
             //用MiniCssExtractPlugin.loader替换掉style-loader
             //把所有的css样式先收集起来
-            { test: /\.css$/, use: [
-                MiniCssExtractPlugin.loader, 
-                'css-loader',
-                {
-                    loader:'postcss-loader',
-                    options:{
-                        postcssOptions: {
-                            plugins: [
-                                "postcss-preset-env"
-                            ],
-                        },
-                    }
-            },
             {
-                loader:'px2rem-loader',
-                options:{
-                    remUnit:75
-                }
-            }] },
+                test: /\.css$/, use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: {
+                                plugins: [
+                                    "postcss-preset-env"
+                                ],
+                            },
+                        }
+                    },
+                    {
+                        loader: 'px2rem-loader',
+                        options: {
+                            remUnit: 75
+                        }
+                    }]
+            },
             //style-loader把css文件当成脚本插入html，css-loader处理@import和background：url()等
-            { test: /\.less$/, use: [MiniCssExtractPlugin.loader, 'css-loader','postcss-loader', 'less-loader'] },
-            { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, 'css-loader','postcss-loader', 'sass-loader'] },
+            { test: /\.less$/, use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'less-loader'] },
+            { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'] },
             {
                 test: /\.(jpg|png|gif|bmp)$/,
                 use: [{
@@ -148,25 +148,27 @@ module.exports = (env)=>({
                         name: '[hash:10].[ext]',
                         esModule: false,
                         limit: 32 * 1024,
-                        outputPath:'images',//指定输出图片的目录images目录 
+                        outputPath: 'images',//指定输出图片的目录images目录 
                         //加上/就是相对于根路径，不加/就是相对于当前的文件相对路径
                         //  /css/main.css /css/images/hash.png
-                        publicPath:'/images'//访问图片的话也需要去images目录里找
+                        publicPath: '/images'//访问图片的话也需要去images目录里找
                     },
                 }],
             },
             //多个loader从右向左执行
             //html-loader作用是解析html中图片的相对路径<img src="./images/logo.png">
             { test: /\.html$/, use: ['html-loader'] },
-            { test: /\.(jpg|png|gif|bmp)$/, use:[{
-                loader: 'file-loader',
-                option: {
-                    name: '[hash:10].[ext]',
-                    esModule: false,
-                    limit: 128*1024 // 如果体积小于limit就转成BASE64字符串内嵌
-                }
-            }]}
-            { 
+            {
+                test: /\.(jpg|png|gif|bmp)$/, use: [{
+                    loader: 'file-loader',
+                    option: {
+                        name: '[hash:10].[ext]',
+                        esModule: false,
+                        limit: 128 * 1024 // 如果体积小于limit就转成BASE64字符串内嵌
+                    }
+                }]
+            }
+            {
                 test: require.resolve('lodash'), //引入一次就会挂载到window上
                 loader: 'expose-loader',
                 options: {
@@ -181,7 +183,7 @@ module.exports = (env)=>({
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html',
-            filename:'index.html'
+            filename: 'index.html'
         }),
         //有这个插件可以页面不用import lodash了，缺点是无法在全局下使用，只是当前入口文件的上下文有
         new webpack.ProvidePlugin({
@@ -207,10 +209,10 @@ module.exports = (env)=>({
         //把收集到的所有的CSS样式都写入到main.css,然后现把此资源插入到HTML里去
         new MiniCssExtractPlugin({
             //只要CSS内容不变，contenthash就不会变
-            filename:'[name].[contenthash:5].css'
+            filename: '[name].[contenthash:5].css'
         }),
         false
     ].filter(Boolean),
-   
+
 });
 //glob文件匹配模式 *可以匹配任意字符，除了路径分隔, 符 **可以匹配任意字符，包括路径分隔符
